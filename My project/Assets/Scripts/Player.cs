@@ -2,25 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
 public class Player : MonoBehaviour
 {
-    public int velocidade = 10;
-    public int forcaPulo =7;
-    public  bool noChao;
+    public int velocidade = 100;
+    public int forcaPulo = 7;
+    private bool noChao;
     private Rigidbody rb;
+    private AudioSource source;
     // Start is called before the first frame update
     void Start()
     {
         Debug.Log(message:"START");
         TryGetComponent(out rb);
+        TryGetComponent(out source);
     }
     private void OnCollisionEnter(Collision collision){
-        if(!noChao && collision.gameObject.tag == "Chão"){
+        if(! noChao && collision.gameObject.tag == "Chão"){
             noChao = true;
         }
     }
-
+   
     // Update is called once per frame
     void Update()
     {
@@ -29,6 +30,7 @@ public class Player : MonoBehaviour
          float v = Input.GetAxis("Vertical"); // -1 pra trás,0 pra nada, 1 pra frente
          rb.AddForce(new Vector3(h, 0, v)* velocidade* Time.deltaTime, ForceMode.Impulse);
          if(Input.GetKeyDown(KeyCode.Space) && noChao){
+            source.Play();
             rb.AddForce(Vector3.up * forcaPulo, ForceMode.Impulse);
             noChao = false;
          }
